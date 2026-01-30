@@ -1,6 +1,4 @@
 ---
-// 1. On enlève l'import de Header (inutile ici)
-// 2. On définit la variable currentPath
 const currentPath = Astro.url.pathname;
 ---
 
@@ -8,7 +6,7 @@ const currentPath = Astro.url.pathname;
     <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
         
         <a href="/" class="text-xl font-bold uppercase tracking-wider hover:text-blue-400 transition-colors">
-            Agence<span class="text-blue-500">Immo</span>
+            Ewan<span class="text-blue-500">Company</span>
         </a>
 
         <div class="flex gap-8">
@@ -16,7 +14,6 @@ const currentPath = Astro.url.pathname;
                 href="/" 
                 class:list={[
                     "text-sm font-medium hover:text-blue-400 transition-colors",
-                    // Si on est à la racine, on met le texte en bleu, sinon blanc
                     currentPath === "/" ? "text-blue-500" : "text-gray-300"
                 ]}
             >
@@ -27,7 +24,6 @@ const currentPath = Astro.url.pathname;
                 href="/offres" 
                 class:list={[
                     "text-sm font-medium hover:text-blue-400 transition-colors",
-                    // Si l'URL commence par /offres, on met le texte en bleu
                     currentPath.startsWith("/offres") ? "text-blue-500" : "text-gray-300"
                 ]}
             >

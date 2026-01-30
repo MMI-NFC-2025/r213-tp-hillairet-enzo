@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
 import Layout from "../layouts/Layout.astro";
-import OffreCard from "../components/OffreCard.astro"; // Vérifie que ce chemin est bon !
+import OffreCard from "../components/OffreCard.astro"; 
 import { getOffres } from "../js/backend.mjs";
 
 const offres = await getOffres();
@@ -39,7 +39,7 @@ const offres = await getOffres();
                         data-favori={offre.favori} 
                         data-nom={offre.nomMaison.toLowerCase()}
                     >
-                        {/* On appelle le composant Carte ici */}
+                        {}
                         <OffreCard offre={offre} />
                     </div>
                 ))
