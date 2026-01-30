@@ -3,9 +3,6 @@ import "../styles/global.css";
 import Layout from "../layouts/Layout.astro";
 import OffreCard from "../components/OffreCard.astro";
 import { getOffres } from "../js/backend.mjs";
-import PbImage from './PbImage.astro'; 
-
-const { offre } = Astro.props;
 const offres = await getOffres();
 ---
 
@@ -38,7 +35,7 @@ const offres = await getOffres();
                 offres.map((offre) => (
                     <div 
                         class="offre transition-all duration-500 ease-in-out" 
-                        data-favori={offre.favori.toString()} 
+                        data-favori={offre.favori} 
                         data-nom={offre.nomMaison.toLowerCase()}
                     >
                         <OffreCard offre={offre} />
@@ -53,26 +50,33 @@ const offres = await getOffres();
     </div>
 
     <script>
-        // --- SCRIPT CÔTÉ CLIENT ---
+        // @ts-nocheck
+        
+        // Récupération des éléments du DOM
         const btnFavori = document.getElementById('favori-button');
         const searchInput = document.getElementById('search-input');
         const offres = document.querySelectorAll('.offre');
         const noResult = document.getElementById('no-result');
         const heartIcon = document.getElementById('heart-icon');
         
+        // Variables pour stocker l'état actuel des filtres
         let filterFavori = false;
         let filterText = '';
 
+        // Fonction principale qui applique les filtres
         function filterOffres() {
             let visibleCount = 0;
 
             offres.forEach(el => {
+                // On récupère les infos stockées dans les attributs data-...
                 const isFavori = el.dataset.favori === 'true';
                 const nom = el.dataset.nom;
                 
+                // Logique : Est-ce que ça match le favori ? Est-ce que ça match le texte ?
                 const matchFavori = !filterFavori || isFavori;
                 const matchText = nom.includes(filterText);
 
+                // Si les deux conditions sont ok, on affiche
                 if (matchFavori && matchText) {
                     el.style.display = 'block';
                     visibleCount++;
@@ -81,6 +85,7 @@ const offres = await getOffres();
                 }
             });
 
+            // Affichage du message si tout est caché
             if (visibleCount === 0) {
                 noResult.classList.remove('hidden');
             } else {
@@ -88,9 +93,11 @@ const offres = await getOffres();
             }
         }
 
-        btnFavori.addEventListener('click', () => {
+        // Clic sur le bouton Favori
+        btnFavori?.addEventListener('click', () => {
             filterFavori = !filterFavori;
             
+            // On change le style du bouton (Rouge ou Gris)
             if (filterFavori) {
                 btnFavori.classList.add('bg-red-50', 'border-red-200', 'text-red-600');
                 btnFavori.classList.remove('bg-white', 'border-gray-300', 'text-gray-700');
@@ -104,7 +111,8 @@ const offres = await getOffres();
             filterOffres();
         });
 
-        searchInput.addEventListener('input', (e) => {
+        // Frappe dans la barre de recherche
+        searchInput?.addEventListener('input', (e) => {
             filterText = e.target.value.toLowerCase();
             filterOffres();
         });
