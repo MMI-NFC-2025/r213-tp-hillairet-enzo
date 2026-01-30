@@ -1,116 +1,49 @@
 ---
-import '../styles/global.css'
-import Header from "../components/Header.astro";
-import Layout from '../layouts/Layout.astro';
+import "../styles/global.css";
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/OffreCard.astro";
+import { getOffres } from "../js/backend.mjs";
 
-const offres = [
-    {
-        "adresse": "2821 Lake Sevilla, Palm Harbor, TX",
-        "favori": true,
-        "id": "64l3n8nar836i5j",
-        "nbChambres": 4,
-        "nbSdb": 2,
-        "nomMaison": "Beverly Springfield",
-        "prix": 2700,
-        "surface": 45,
-        "imgUrl": "image1.png"
-    },
-    {
-        "adresse": "2699 Green Valley, Highland Lake",
-        "favori": true,
-        "id": "lo831zeg10hpm9y",
-        "nbChambres": 4,
-        "nbSdb": 2,
-        "nomMaison": "Palm Harbor",
-        "prix": 2095,
-        "surface": 42,
-        "imgUrl": "image2.png"
-    },
-    {
-        "adresse": "909 Woodland St, Michigan, IN",
-        "favori": false,
-        "id": "s1zuhj19x8eb242",
-        "nbChambres": 4,
-        "nbSdb": 3,
-        "nomMaison": "Faulkner Ave",
-        "prix": 4550,
-        "surface": 80,
-        "imgUrl": "image3.png"
-    }
-]
+const offres = await getOffres();
 ---
 
 <Layout titre="Offres">
-    
-    <div class="container mx-auto px-4 py-8">
-        
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-bold">Offres</h1>
-            
-            <button id="favori-button" class="border border-gray-300 px-4 py-2 rounded hover:bg-gray-100 transition-colors text-sm">
-                <span id="favori-text">Filtrer par favoris</span>
-            </button>
-        </div>
+    <h1>Offres</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {
-                offres.map((offre) => (
-                    /* CHANGEMENT ICI : J'ai remplacé hover:shadow-md par shadow-md hover:shadow-xl */
-                    <div class="offre bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300" data-favori={offre.favori.toString()}>
-                        
-                        <div class="h-48 bg-gray-200">
-                            <img src={offre.imgUrl} alt={offre.nomMaison} class="w-full h-full object-cover" />
-                        </div>
+    <button id="favori-button" class="bg-slate-600 rounded-lg text-white p-2">
+        Afficher les favoris
+    </button>
 
-                        <div class="p-4">
-                            <h2 class="text-lg font-bold text-gray-800 mb-1">{offre.nomMaison}</h2>
-                            <p class="text-sm text-gray-500 mb-4">{offre.adresse}</p>
-                            
-                            <div class="flex justify-between items-center border-t border-gray-100 pt-3">
-                                <span class="font-bold text-lg">{offre.prix}€</span>
-                                <a href={`/offres/${offre.id}`} class="text-blue-600 hover:underline text-lg">
-                                    Voir détails
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
-                ))
-            }
-        </div>
-
-        <div id="no-result-message" class="hidden text-center text-gray-500 mt-10">
-            Aucun résultat.
-        </div>
+    <div id="offres-container">
+        {
+            offres.map((offre) => (
+                <div class="offre" data-favori={offre.favori.toString()}>
+                    <Card offre={offre} />
+                </div>
+            ))
+        }
     </div>
 
     <script>
-        const button = document.getElementById('favori-button');
-        const buttonText = document.getElementById('favori-text');
+        //@ts-nocheck
+        const button = document.getElementById("favori-button");
         let showOnlyFavorites = false;
-    
-        button?.addEventListener('click', () => {
+
+        button?.addEventListener("click", () => {
             showOnlyFavorites = !showOnlyFavorites;
-            const offres = document.querySelectorAll('.offre') as NodeListOf<HTMLElement>;
-    
-            offres.forEach(offre => {
-                const isFavori = offre.dataset.favori === 'true';
-                if (showOnlyFavorites && !isFavori) {
-                    offre.style.display = 'none';
+            const offres = document.querySelectorAll(".offre");
+
+            offres.forEach((offre) => {
+                const isFavori = offre.dataset.favori === "true";
+
+                if (showOnlyFavorites) {
+                    offre.style.display = isFavori ? "block" : "none";
+                    button.textContent = "Afficher tout";
                 } else {
-                    offre.style.display = 'block';
+                    offre.style.display = "block";
+                    button.textContent = "Afficher les favoris";
                 }
             });
-    
-            if (button && buttonText) {
-                if (showOnlyFavorites) {
-                    button.style.backgroundColor = '#e5e7eb';
-                    buttonText.textContent = 'Tout afficher';
-                } else {
-                    button.style.backgroundColor = '';
-                    buttonText.textContent = 'Filtrer par favoris';
-                }
-            }
         });
     </script>
 </Layout>
