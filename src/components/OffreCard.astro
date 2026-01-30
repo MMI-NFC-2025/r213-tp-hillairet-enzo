@@ -1,21 +1,24 @@
 ---
-const { offre } = Astro.props;
+import { getImageUrl } from '../js/backend.mjs';
+import { Image } from "astro:assets";
+
+const {
+  record,
+  recordImage,
+  width = 400,  
+  height = 300,  
+} = Astro.props;
+
+const imageURL = await getImageUrl(record, recordImage);
 ---
 
-<div class="card">
-    <img src={offre.imgUrl} alt={offre.nomMaison} />
-
-    <h2>{offre.nomMaison}</h2>
-    <p>{offre.adresse}</p>
-
-    <ul>
-        <li>Chambres : {offre.nbChambres}</li>
-        <li>Salles de bain : {offre.nbSdb}</li>
-        <li>Surface : {offre.surface} m²</li>
-        <li>Prix : {offre.prix} €</li>
-    </ul>
-
-    {offre.favori && <span class="favori">★ Favori</span>}
-</div>
-
-
+{}
+{imageURL && 
+    <Image
+        src={imageURL}
+        alt={record.nomMaison || 'Image'}
+        width={width}
+        height={height}
+        class="object-cover w-full h-full"
+    />
+}
