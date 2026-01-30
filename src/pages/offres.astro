@@ -4,100 +4,48 @@ import Layout from "../layouts/Layout.astro";
 import OffreCard from "../components/OffreCard.astro";
 import { getOffres } from "../js/backend.mjs";
 
-import PbImage from "../components/PbImage.astro"; 
-
 const offres = await getOffres();
 ---
 
 <Layout titre="Offres">
     <div class="container mx-auto px-4 py-8">
-        
-        <div class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-bold">Offres</h1>
-            
-            <button id="favori-button" class="border border-gray-300 px-4 py-2 rounded hover:bg-gray-100 transition-colors text-sm">
-                <span id="favori-text">Filtrer par favoris</span>
-            </button>
-        </div>
+        <h1 class="text-4xl font-bold mb-6">Offres</h1>
 
-        {!offres || offres.length === 0 ? (
-             <p class="text-center text-gray-500">Aucune offre disponible pour le moment.</p>
-        ) : (
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {offres.map((offre) => (
-                    <div class="offre bg-white border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300" 
-                         data-favori={offre.favori ? "true" : "false"}>
-                        
-                        <div class="h-48 bg-gray-200">
-                            <PbImage 
-                                record={offre} 
-                                recordImage={offre.images && offre.images[0]} 
-                            />
-                        </div>
+        <button id="favori-button" class="bg-blue-600 hover:bg-blue-700 rounded-lg text-white p-2 mb-6 transition-colors">
+            Afficher les favoris
+        </button>
 
-                        <div class="p-4">
-                            <h2 class="text-lg font-bold text-gray-800 mb-1">{offre.nomMaison}</h2>
-                            <p class="text-sm text-gray-500 mb-4">{offre.adresse}</p>
-                            
-                            <div class="flex justify-between items-center border-t border-gray-100 pt-3">
-                                <span class="font-bold text-lg">{offre.prix} €</span>
-                                <a href={`/offres/${offre.id}`} class="text-blue-600 hover:underline text-lg">
-                                    Voir détails
-                                </a>
-                            </div>
-                        </div>
-
+        <div id="offres-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {
+                offres.map((offre) => (
+                    <div class="offre" data-favori={offre.favori}>
+                        <OffreCard offre={offre} />
                     </div>
-                ))}
-            </div>
-        )}
-
-        <div id="no-result-message" class="hidden text-center text-gray-500 mt-10">
-            Aucun résultat.
+                ))
+            }
         </div>
     </div>
 
     <script>
-        const button = document.getElementById('favori-button');
-        const buttonText = document.getElementById('favori-text');
+        //@ts-nocheck
+        const button = document.getElementById("favori-button");
         let showOnlyFavorites = false;
-    
-        button?.addEventListener('click', () => {
-            showOnlyFavorites = !showOnlyFavorites;
-            const offres = document.querySelectorAll('.offre'); // Suppression du typage TS strict pour éviter les erreurs si tu n'es pas en TS strict
-    
-            let visibleCount = 0;
 
-            offres.forEach((elem) => {
-                const offre = elem; // Cast simple
-                // On lit l'attribut data-favori qu'on a mis plus haut
-                const isFavori = offre.getAttribute('data-favori') === 'true';
-                
-                if (showOnlyFavorites && !isFavori) {
-                    offre.style.display = 'none';
+        button?.addEventListener("click", () => {
+            showOnlyFavorites = !showOnlyFavorites;
+            const offres = document.querySelectorAll(".offre");
+
+            offres.forEach((offre) => {
+                const isFavori = offre.dataset.favori === "true";
+
+                if (showOnlyFavorites) {
+                    offre.style.display = isFavori ? "block" : "none";
+                    button.textContent = "Tout afficher";
                 } else {
-                    offre.style.display = 'block';
-                    visibleCount++;
+                    offre.style.display = "block";
+                    button.textContent = "Afficher les favoris";
                 }
             });
-    
-            // Gestion du message "Aucun résultat"
-            const noResultMessage = document.getElementById('no-result-message');
-            if(noResultMessage) {
-                if(visibleCount === 0) noResultMessage.classList.remove('hidden');
-                else noResultMessage.classList.add('hidden');
-            }
-    
-            // Mise à jour du bouton
-            if (button && buttonText) {
-                if (showOnlyFavorites) {
-                    button.style.backgroundColor = '#e5e7eb'; // Gris
-                    buttonText.textContent = 'Tout afficher';
-                } else {
-                    button.style.backgroundColor = ''; // Blanc par défaut
-                    buttonText.textContent = 'Filtrer par favoris';
-                }
-            }
         });
     </script>
 </Layout>
