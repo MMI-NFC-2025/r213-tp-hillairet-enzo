@@ -1,24 +1,47 @@
 ---
-import { getImageUrl } from '../js/backend.mjs';
-import { Image } from "astro:assets";
+import PbImage from './PbImage.astro';
 
-const {
-  record,
-  recordImage,
-  width = 400,  
-  height = 300,  
-} = Astro.props;
-
-const imageURL = await getImageUrl(record, recordImage);
+const { offre } = Astro.props;
 ---
 
-{}
-{imageURL && 
-    <Image
-        src={imageURL}
-        alt={record.nomMaison || 'Image'}
-        width={width}
-        height={height}
-        class="object-cover w-full h-full"
-    />
-}
+<div class="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col group">
+    
+    <div class="relative h-56 bg-gray-200 overflow-hidden">
+        <PbImage 
+            record={offre} 
+            recordImage={offre.images && offre.images[0]} 
+            width={400}
+            height={300}
+        />
+        
+        {offre.favori && (
+            <div class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm flex items-center gap-1 z-10">
+                <span>❤️</span> Favori
+            </div>
+        )}
+
+        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
+    </div>
+
+    <div class="p-5 flex flex-col flex-grow justify-between">
+        <div>
+            <h2 class="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                {offre.nomMaison}
+            </h2>
+            <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
+                📍 {offre.adresse}
+            </p>
+        </div>
+        
+        <div class="flex justify-between items-end border-t border-gray-100 pt-4 mt-2">
+            <div>
+                <span class="text-xs text-gray-400 uppercase font-semibold">Prix</span>
+                <div class="font-bold text-2xl text-blue-900">{offre.prix.toLocaleString()} €</div>
+            </div>
+            
+            <a href={`/offres/${offre.id}`} class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                Voir
+            </a>
+        </div>
+    </div>
+</div>
