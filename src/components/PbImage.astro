@@ -4,20 +4,20 @@ import { getImageUrl } from '../js/backend.mjs';
 const {
   record,
   recordImage,
+  width = 400,  
+  height = 300,
 } = Astro.props;
 
 const imageURL = await getImageUrl(record, recordImage);
 ---
 
-{}
 {imageURL ? (
     <img
         src={imageURL}
         alt={record.nomMaison || 'Image'}
-        class="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
+        width={width}   height={height} class="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
     />
 ) : (
-
     <div class="flex items-center justify-center w-full h-full bg-gray-200 text-gray-500">
         Pas d'image
     </div>
