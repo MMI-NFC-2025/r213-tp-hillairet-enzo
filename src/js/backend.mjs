@@ -1,12 +1,18 @@
 import PocketBase from 'pocketbase';
 
-const db = new PocketBase('http://localhost:8090');
+const pb = new PocketBase('http://127.0.0.1:8090');
+
 export async function getOffres() {
-    
     try {
-        let data = await db.collection('Maison').getFullList({
-            sort: '-created', 
+        let data = await pb.collection('Maison').getFullList({
+            sort: '-created',
         });
+        
+        data = data.map((maison) => {
+            maison.imgUrl = pb.files.getURL(maison, maison.images);
+            return maison;
+        });
+
         return data;
     } catch (error) {
         console.log('Une erreur est survenue en lisant la liste des maisons', error);
@@ -14,16 +20,10 @@ export async function getOffres() {
     }
 }
 
-export async function getImageUrl(record, recordImage) {
-    const url = db.files.getUrl(record, recordImage);
-    return url;
-}
-
-
 export async function getOffre(id) {
     try {
         let data = await pb.collection('Maison').getOne(id);
-        data.imageUrl = pb.files.getURL(data, data.images);
+        data.imgUrl = pb.files.getURL(data, data.images);
         return data;
     } catch (error) {
         console.log('Une erreur est survenue en lisant la maison', error);
@@ -33,17 +33,29 @@ export async function getOffre(id) {
 
 export async function filterBySurface(surfaceMin) {
     try {
-        console.log("--- TEST FORCE ---");
+        const s = parseInt(surfaceMin);
         
         const records = await pb.collection('Maison').getFullList({
-            filter: 'surface > 0', 
+            filter: `surface > ${s}`, 
+            sort: '-created',
         });
 
-        console.log("Résultats trouvés avec surface > 0 :", records.length);
-        return records;
+        const recordsWithImages = records.map((maison) => {
+            maison.imgUrl = pb.files.getURL(maison, maison.images);
+            return maison;
+        });
+
+        return recordsWithImages;
 
     } catch (error) {
-        console.log('Erreur :', error);
+        console.log('Erreur filterBySurface :', error);
         return [];
     }
+}
+
+export function getImageUrl(record, filename) {
+    if (filename) {
+        return pb.files.getURL(record, filename);
+    }
+    return null;
 }
