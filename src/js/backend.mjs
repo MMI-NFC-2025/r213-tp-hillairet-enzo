@@ -59,3 +59,4 @@ export function getImageUrl(record, filename) {
     }
     return null;
 }
+
