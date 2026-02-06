@@ -33,12 +33,17 @@ export async function getOffre(id) {
 
 export async function filterBySurface(surfaceMin) {
     try {
-        let data = await pb.collection('Maison').getFullList({
-            filter: `surface > ${surfaceMin}`
+        console.log("--- TEST FORCE ---");
+        
+        const records = await pb.collection('Maison').getFullList({
+            filter: 'surface > 0', 
         });
-        return data;
+
+        console.log("Résultats trouvés avec surface > 0 :", records.length);
+        return records;
+
     } catch (error) {
-        console.log('Une erreur est survenue en filtrant par surface', error);
-        return []; 
+        console.log('Erreur :', error);
+        return [];
     }
 }

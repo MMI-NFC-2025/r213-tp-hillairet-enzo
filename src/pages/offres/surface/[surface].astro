@@ -1,0 +1,58 @@
+---
+
+import { filterBySurface } from '../../../js/backend.mjs';
+import Layout from '../../../layouts/Layout.astro';
+import OffreCard from '../../../components/OffreCard.astro'; 
+
+const { surface } = Astro.params;
+
+// 3. DEBUG & SECURITE
+console.log("--- DEBUG START ---");
+console.log("Surface demandée :", surface);
+
+let offres = [];
+try {
+    // On appelle le backend
+    const reponse = await filterBySurface(surface);
+    console.log("Réponse du backend :", reponse);
+
+    // Vérification stricte : est-ce que c'est bien un tableau ?
+    if (Array.isArray(reponse)) {
+        offres = reponse;
+    } else {
+        console.error("ATTENTION : Le backend n'a pas renvoyé un tableau !");
+        // Si ce n'est pas un tableau, on garde offres = [] pour éviter le crash
+    }
+
+} catch (error) {
+    console.error("Erreur lors de l'appel backend :", error);
+    offres = [];
+}
+console.log("--- DEBUG END ---");
+---
+
+<Layout titre={`Maisons > ${surface}m²`}>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8">Maisons de plus de {surface} m²</h1>
+        
+        {/* Ici on affiche juste le nombre d'offres trouvées pour tester */}
+        <p class="mb-4 bg-blue-100 p-2 rounded text-blue-800">
+            Debug : {offres.length} maison(s) trouvée(s).
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {
+                offres.map((offre) => (
+                    <div class="offre">
+                        <OffreCard offre={offre} />
+                        <div class="mt-2 text-right">
+                           <a href={`/offres/${offre.id}`} class="text-blue-600 font-bold hover:underline">
+                                Voir détails
+                            </a> 
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</Layout>
