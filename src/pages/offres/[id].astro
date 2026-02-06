@@ -1,0 +1,57 @@
+---
+// src/pages/offres/[id].astro
+import { getOffre } from '../../backend.mjs';
+import Layout from '../../layouts/Layout.astro';
+
+// 1. On récupère l'ID passé dans l'URL
+const { id } = Astro.params;
+
+// 2. On cherche l'offre correspondante dans PocketBase
+const offre = await getOffre(id);
+
+// 3. (Optionnel) Gestion d'erreur si l'ID n'existe pas
+if (!offre) {
+  return Astro.redirect('/offres'); // Redirige vers la liste si pas trouvé
+}
+---
+
+<Layout titre={offre.nomMaison}>
+  <div class="container mx-auto px-4 py-8">
+    
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="h-96 w-full relative">
+        <img 
+          src={offre.imgUrl} 
+          alt={offre.nomMaison} 
+          class="w-full h-full object-cover"
+        />
+      </div>
+
+      <div class="p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-900">{offre.nomMaison}</h1>
+            <span class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">
+                {offre.prix} €
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="space-y-4">
+                <h2 class="text-xl font-semibold border-b pb-2">Détails</h2>
+                <ul class="space-y-2 text-gray-700">
+                    <li><strong>Adresse :</strong> {offre.adresse}</li>
+                    <li><strong>Surface :</strong> {offre.surface} m²</li>
+                    <li><strong>Chambres :</strong> {offre.nbChambres}</li>
+                    <li><strong>Salles de bain :</strong> {offre.nbSdb}</li>
+                </ul>
+            </div>
+        </div>
+        
+        <a href="/offres" class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-colors">
+            ← Retour aux offres
+        </a>
+      </div>
+    </div>
+
+  </div>
+</Layout>

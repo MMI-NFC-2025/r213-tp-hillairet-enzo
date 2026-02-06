@@ -2,6 +2,7 @@ import PocketBase from 'pocketbase';
 
 const db = new PocketBase('http://localhost:8090');
 export async function getOffres() {
+    
     try {
         let data = await db.collection('Maison').getFullList({
             sort: '-created', 
@@ -16,4 +17,28 @@ export async function getOffres() {
 export async function getImageUrl(record, recordImage) {
     const url = db.files.getUrl(record, recordImage);
     return url;
+}
+
+
+export async function getOffre(id) {
+    try {
+        let data = await pb.collection('Maison').getOne(id);
+        data.imageUrl = pb.files.getURL(data, data.images);
+        return data;
+    } catch (error) {
+        console.log('Une erreur est survenue en lisant la maison', error);
+        return null;
+    }
+}
+
+export async function filterBySurface(surfaceMin) {
+    try {
+        let data = await pb.collection('Maison').getFullList({
+            filter: `surface > ${surfaceMin}`
+        });
+        return data;
+    } catch (error) {
+        console.log('Une erreur est survenue en filtrant par surface', error);
+        return [];
+    }
 }
