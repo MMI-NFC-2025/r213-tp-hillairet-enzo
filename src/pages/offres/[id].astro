@@ -1,17 +1,12 @@
 ---
-// src/pages/offres/[id].astro
-import { getOffre } from '../../backend.mjs';
+import { getOffre } from '../../js/backend.mjs'; 
 import Layout from '../../layouts/Layout.astro';
 
-// 1. On récupère l'ID passé dans l'URL
 const { id } = Astro.params;
-
-// 2. On cherche l'offre correspondante dans PocketBase
 const offre = await getOffre(id);
 
-// 3. (Optionnel) Gestion d'erreur si l'ID n'existe pas
 if (!offre) {
-  return Astro.redirect('/offres'); // Redirige vers la liste si pas trouvé
+  return Astro.redirect('/offres');
 }
 ---
 

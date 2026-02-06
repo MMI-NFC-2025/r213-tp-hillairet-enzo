@@ -39,6 +39,6 @@ export async function filterBySurface(surfaceMin) {
         return data;
     } catch (error) {
         console.log('Une erreur est survenue en filtrant par surface', error);
-        return [];
+        return []; 
     }
 }
