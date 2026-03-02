@@ -5,6 +5,8 @@ import OffreCard from "../../components/OffreCard.astro";
 import { getOffres } from "../../js/backend.mjs"; 
 
 const offres = await getOffres();
+console.log("dans offres", offres);
+
 ---
 
 <Layout titre="Nos Offres">

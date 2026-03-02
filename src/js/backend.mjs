@@ -1,11 +1,12 @@
 import PocketBase from 'pocketbase';
 
-const pb = new PocketBase('https://agence.hillairet.optimiseus.fr/');
+const pb = new PocketBase('https://agence.hillairet.optimiseus.fr/_/');
+//const pb = new PocketBase('http://127.0.0.1:8090/');//
 
 export async function getOffres() {
     try {
         let data = await pb.collection('Maison').getFullList({
-            sort: '-created',
+            //sort: '-created',
         });
         
         data = data.map((maison) => {
@@ -23,7 +24,7 @@ export async function getOffres() {
 export async function getOffre(id) {
     try {
         let data = await pb.collection('Maison').getOne(id);
-        data.imgUrl = pb.files.getURL(data, data.images);
+       data.imgUrl = pb.files.getURL(data, data.images);
         return data;
     } catch (error) {
         console.log('Une erreur est survenue en lisant la maison', error);
@@ -60,3 +61,6 @@ export function getImageUrl(record, filename) {
     return null;
 }
 
+export async function addOffre(nouvelleOffre) {
+    // votre code pour ajouter une offre...
+}

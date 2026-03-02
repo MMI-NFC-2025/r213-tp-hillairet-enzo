@@ -1,15 +1,10 @@
 import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
-import vercel from '@astrojs/vercel';
-
-import node from '@astrojs/node';
+import node from '@astrojs/node'; // Change l'import
 
 export default defineConfig({
-  output: 'server', 
-  vite: {
-    plugins: [tailwindcss()]
-  },
+  output: 'server', // Change "static" en "server"
   adapter: node({
-    mode: 'standalone'
-  })
+    mode: 'standalone',
+  }),
+  base: '/site', // Garde bien ton base path
 });
