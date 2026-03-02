@@ -1,10 +1,10 @@
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node'; // Change l'import
+import node from '@astrojs/node';
 
 export default defineConfig({
-  output: 'server', // Change "static" en "server"
+  output: 'server', // On passe de "static" à "server"
   adapter: node({
     mode: 'standalone',
   }),
-  base: '/site', // Garde bien ton base path
+  base: '/site', // Ton chemin d'accès
 });
